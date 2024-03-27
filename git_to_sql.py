@@ -1,7 +1,8 @@
 import os
 import json
 import pandas as pd
-import psycopg2
+# import psycopg2
+import pymysql
 from sqlalchemy import create_engine
 
 # Define the path where your data files are stored
@@ -41,7 +42,7 @@ Agg_Trans["State"] = Agg_Trans["State"].str.replace('andaman-&-nicobar-islands',
 Agg_Trans["State"] = Agg_Trans["State"].str.replace('dadra-&-nagar-haveli-&-daman-&-diu','dadra and nagar haveli and daman and diu')
 Agg_Trans["State"] = Agg_Trans["State"].str.replace("-", " ")
 Agg_Trans["State"] = Agg_Trans["State"].str.title()
-# print(Agg_Trans)
+print(Agg_Trans)
 
 
 path2 = "C:/Users/souls/OneDrive/Desktop/Phonepe_pulse/pulse/data/aggregated/user/country/india/state/"
@@ -59,19 +60,19 @@ for i in Agg_user_list:
             p_k=p_j+k
             Data=open(p_k,'r')
             D=json.load(Data)
-        try:
-            for z in D['data']['usersByDevice']:
-                Name = z['brand']
-                count = z['count']
-                percentage = z["percentage"]
-                clm['Brand'].append(Name)
-                clm['Device_count'].append(count)
-                clm['Percentage'].append(percentage)
-                clm['State'].append(i)
-                clm['Year'].append(j)
-                clm['Quater'].append(int(k.strip('.json')))
-        except:
-            pass
+            try:
+                for z in D['data']['usersByDevice']:
+                    Name = z['brand']
+                    count = z['count']
+                    percentage = z["percentage"]
+                    clm['Brand'].append(Name)
+                    clm['Device_count'].append(count)
+                    clm['Percentage'].append(percentage)
+                    clm['State'].append(i)
+                    clm['Year'].append(j)
+                    clm['Quater'].append(int(k.strip('.json')))
+            except:
+                pass
 
 # Successfully created a DataFrame
 Agg_device_list = pd.DataFrame(clm)
@@ -80,7 +81,7 @@ Agg_device_list["State"]=Agg_device_list["State"].str.replace('dadra-&-nagar-hav
 Agg_device_list["State"]=Agg_device_list["State"].str.replace("-"," ")
 Agg_device_list["State"]=Agg_device_list["State"].str.title()
 
-print(Agg_device_list)
+# print(Agg_device_list)
 
 path3="C:/Users/souls/OneDrive/Desktop/Phonepe_pulse/pulse/data/map/transaction/hover/country/india/state/"
 Agg_map_data=os.listdir(path3)
@@ -97,19 +98,20 @@ for i in Agg_map_data:
             p_k=p_j+k
             Data=open(p_k,'r')
             D=json.load(Data)
-        try:
-            for z in D['data']['hoverDataList']:
-                Name = z['name']
-                count = z['metric'][0]["count"]
-                amount = z['metric'][0]["amount"]
-                clm['District_name'].append(Name)
-                clm['Count'].append(count)
-                clm['Amount'].append(amount)
-                clm['State'].append(i)
-                clm['Year'].append(j)
-                clm['Quater'].append(int(k.strip('.json')))
-        except:
-            pass
+            try:
+                for z in D['data']['hoverDataList']:
+                    Name = z['name']
+                    count = z['metric'][0]["count"]
+                    amount = z['metric'][0]["amount"]
+                    clm['District_name'].append(Name)
+                    clm['Count'].append(count)
+                    clm['Amount'].append(amount)
+                    clm['State'].append(i)
+                    clm['Year'].append(j)
+                    # clm['Quater'].append(int(k.strip('.json')))
+                    clm['Quater'].append(int(k.strip('.json')))
+            except:
+                pass
 Agg_district = pd.DataFrame(clm)
 Agg_district["State"]=Agg_district["State"].str.replace('andaman-&-nicobar-islands','andaman & nicobar')
 Agg_district["State"]=Agg_district["State"].str.replace('dadra-&-nagar-haveli-&-daman-&-diu','dadra and nagar haveli and daman and diu')
@@ -133,19 +135,19 @@ for i in Agg_registered_user:
             p_k=p_j+k
             Data=open(p_k,'r')
             D=json.load(Data)
-        try:
-            for z in D['data']['hoverData'].items():
-                Name = z[0]
-                Registereduser = z[1]["registeredUsers"]
-                Appopen = z[1]["appOpens"]
-                clm['District_name'].append(Name)
-                clm['Registered_user'].append(Registereduser)
-                clm['App_open'].append(Appopen)
-                clm['State'].append(i)
-                clm['Year'].append(j)
-                clm['Quater'].append(int(k.strip('.json')))
-        except:
-            pass
+            try:
+                for z in D['data']['hoverData'].items():
+                    Name = z[0]
+                    Registereduser = z[1]["registeredUsers"]
+                    Appopen = z[1]["appOpens"]
+                    clm['District_name'].append(Name)
+                    clm['Registered_user'].append(Registereduser)
+                    clm['App_open'].append(Appopen)
+                    clm['State'].append(i)
+                    clm['Year'].append(j)
+                    clm['Quater'].append(int(k.strip('.json')))
+            except:
+                pass
 
 
 Agg_users = pd.DataFrame(clm)
@@ -169,22 +171,27 @@ for i in Agg_pincode_list:
         Agg_yr_list=os.listdir(p_j)
         for k in Agg_yr_list:
             p_k=p_j+k
+            # print("Processing file:", p_k)
             Data=open(p_k,'r')
             D=json.load(Data)
-        try:
-            for z in D['data']['pincodes']:
-                Pincode = z["entityName"]
-                Count = z["metric"]["count"]
-                Amount = z["metric"]["amount"]
-                clm['Pincode'].append(Pincode)
-                clm['Count'].append(Count)
-                clm['Amount'].append(Amount)
-                clm['State'].append(i)
-                clm['Year'].append(j)
-                clm['Quater'].append(int(k.strip('.json')))
-        except:
-            pass
+            try:
+                for z in D['data']['pincodes']:
+                # print("Processing pincode data:", z)
+                    Pincode = z["entityName"]
+                    Count = z["metric"]["count"]
+                    Amount = z["metric"]["amount"]
+                    clm['Pincode'].append(Pincode)
+                    clm['Count'].append(Count)
+                    clm['Amount'].append(Amount)
+                    clm['State'].append(i)
+                    clm['Year'].append(j)
+                    clm['Quater'].append(int(k.strip('.json')))
+            except:
+                pass
 Agg_pincode = pd.DataFrame(clm)
+# print(Agg_pincode["Quater"].unique())
+# print("Shape of Agg_pincode data frame:", Agg_pincode.shape)
+
 Agg_pincode["State"]=Agg_pincode["State"].str.replace('andaman-&-nicobar-islands','andaman & nicobar')
 Agg_pincode["State"]=Agg_pincode["State"].str.replace('dadra-&-nagar-haveli-&-daman-&-diu','dadra and nagar haveli and daman and diu')
 Agg_pincode["State"]=Agg_pincode["State"].str.replace("-"," ")
@@ -224,30 +231,34 @@ Agg_user_pincode["State"]=Agg_user_pincode["State"].str.title()
 
 
 # Establish connection to your PostgreSQL database
-conn = psycopg2.connect(
-    user="postgres",
-    password="abc",
-    host="localhost",
-    port="5432",
-    database="Phonepe_pulse"
+host = "phonepe-pulse.cr6e2igouppo.ap-south-1.rds.amazonaws.com"
+user = "admin"
+password = "admin123"
+
+# Establish connection to your AWS RDS MySQL database
+conn = pymysql.connect(
+    host=host,
+    user=user,
+    password=password
 )
 
 # Create a cursor object
 cur = conn.cursor()
 
 # Create engine for SQLAlchemy
-engine = create_engine('postgresql://postgres:abc@localhost:5432/Phonepe_pulse')
+engine = create_engine(f'mysql+pymysql://{user}:{password}@{host}/Phonepe_pulse')
 
 # Import Pandas DataFrames
 
 # Push Pandas DataFrames into PostgreSQL
-Agg_Trans.to_sql('transaction_data', engine, if_exists='replace', index=False)
-Agg_device_list.to_sql('user_data', engine, if_exists='replace', index=False)
-Agg_district.to_sql('geographical_transaction_data', engine, if_exists='replace', index=False)
-Agg_users.to_sql('geographical_user_data', engine, if_exists='replace', index=False)
-Agg_pincode.to_sql('pincode_data', engine, if_exists='replace', index=False)
-Agg_user_pincode.to_sql('user_pincode_data', engine, if_exists='replace', index=False)
+Agg_Trans.to_sql('aggregated_transaction', engine, if_exists='replace', index=False)
+Agg_device_list.to_sql('aggregated_user', engine, if_exists='replace', index=False)
+Agg_district.to_sql('trans_by_map', engine, if_exists='replace', index=False)
+Agg_users.to_sql('user_by_map', engine, if_exists='replace', index=False)
+Agg_pincode.to_sql('trans_by_pincode', engine, if_exists='replace', index=False)
+Agg_user_pincode.to_sql('user_by_pincode', engine, if_exists='replace', index=False)
 
+# Push Pandas DataFrames into PostgreSQL
 # Commit the transaction and close the connection
 conn.commit()
 cur.close()
