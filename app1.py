@@ -10,9 +10,9 @@ import pymysql
 
 # Function to establish database connection
 def get_database_connection():
-    host = "phonepe-pulse.cr6e2igouppo.ap-south-1.rds.amazonaws.com"
-    user = "admin"
-    password = "admin123"
+    host = "Your_host_name"
+    user = "Your_user_name"
+    password = "Your_password"
     return pymysql.connect(host=host, user=user, password=password, database="Phonepe_pulse")
 
 # Function to execute SQL query
