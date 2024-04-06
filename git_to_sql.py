@@ -231,9 +231,9 @@ Agg_user_pincode["State"]=Agg_user_pincode["State"].str.title()
 
 
 # Establish connection to your PostgreSQL database
-host = "phonepe-pulse.cr6e2igouppo.ap-south-1.rds.amazonaws.com"
-user = "admin"
-password = "admin123"
+host = "host_name"
+user = "your_user_name"
+password = "your_password"
 
 # Establish connection to your AWS RDS MySQL database
 conn = pymysql.connect(
